@@ -60,12 +60,6 @@ class Swiper extends Component {
 
     this.initializeCardStyle()
     this.initializePanResponder()
-
-    this.doubleTapLastTap = 0;
-    this.doubleTapTimeout = null;
-
-    this.longTapTimeout = null;
-    this.longTapped = false;
   }
 
   componentDidUpdate = (prevProps, prevState) => {
@@ -230,12 +224,6 @@ class Swiper extends Component {
       x: 0,
       y: 0
     })
-
-    this.longTapTimeout = setTimeout(() => {
-      if(this.state.slideGesture) return;
-      this.props.onLongTapCard(this.state.firstCardIndex);
-      this.longTapped = true;
-    }, this.props.longTapDelay);
   }
 
   validPanResponderRelease = () => {
@@ -262,7 +250,6 @@ class Swiper extends Component {
   }
 
   onPanResponderRelease = (e, gestureState) => {
-    clearTimeout(this.longTapTimeout);
     this.props.dragEnd && this.props.dragEnd()
     if (this.state.panResponderLocked) {
       this.state.pan.setValue({
@@ -297,24 +284,7 @@ class Swiper extends Component {
     }
 
     if (!this.state.slideGesture) {
-      const tap = () =>this.props.onTapCard(this.state.firstCardIndex)
-
-      const doubleTap = typeof this.props.onDoubleTabCard == 'function';
-
-      if(this.longTapped) this.longTapped = false;
-      else if(doubleTap) {
-        const delay = this.props.doubleTapDelay;
-        const now = Date.now();
-        
-        if(this.doubleTapLastTap && now - this.doubleTapLastTap <= delay){
-          clearTimeout(this.doubleTapTimeout);
-          this.props.onDoubleTabCard(this.state.firstCardIndex);
-        } else {
-          this.doubleTapTimeout = setTimeout(tap, delay);
-          this.doubleTapLastTap = now;
-        }
-      } else tap()
-      
+      this.props.onTapCard(this.state.firstCardIndex)
     }
 
     this.setState({
@@ -959,9 +929,7 @@ Swiper.propTypes = {
   verticalSwipe: PropTypes.bool,
   verticalThreshold: PropTypes.number,
   zoomAnimationDuration: PropTypes.number,
-  zoomFriction: PropTypes.number,
-  doubleTapDelay: PropTypes.number,
-  longTapDelay: PropTypes.number
+  zoomFriction: PropTypes.number
 }
 
 Swiper.defaultProps = {
@@ -1056,9 +1024,7 @@ Swiper.defaultProps = {
   verticalSwipe: true,
   verticalThreshold: height / 5,
   zoomAnimationDuration: 100,
-  zoomFriction: 7,
-  doubleTapDelay: 200,
-  longTapDelay: 500
+  zoomFriction: 7
 }
 
 export default Swiper
