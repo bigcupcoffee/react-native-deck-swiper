@@ -299,7 +299,7 @@ class Swiper extends Component {
     if (!this.state.slideGesture) {
       const tap = () =>this.props.onTapCard(this.state.firstCardIndex)
 
-      const doubleTap = typeof this.props.onDoubleTabCard == 'function';
+      const doubleTap = typeof this.props.onDoubleTapCard == 'function';
 
       if(this.longTapped) this.longTapped = false;
       else if(doubleTap) {
@@ -308,7 +308,7 @@ class Swiper extends Component {
         
         if(this.doubleTapLastTap && now - this.doubleTapLastTap <= delay){
           clearTimeout(this.doubleTapTimeout);
-          this.props.onDoubleTabCard(this.state.firstCardIndex);
+          this.props.onDoubleTapCard(this.state.firstCardIndex);
         } else {
           this.doubleTapTimeout = setTimeout(tap, delay);
           this.doubleTapLastTap = now;
